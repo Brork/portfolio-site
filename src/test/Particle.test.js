@@ -160,7 +160,7 @@ describe("Particle", () => {
       expect(actual.velocity.y).toBe(1);
     });
   });
-  describe("Particle.resolveEdges", () => {
+  describe.only("Particle.resolveEdges", () => {
     it("if x property is less than 0+radius property then x property will be set to 0+radius", () => {
       const actual = new Particle(5, -5, 5);
       actual.resolveEdges(100, 100);
@@ -170,7 +170,13 @@ describe("Particle", () => {
       const actual = new Particle(5, -5, 5);
       actual.velocity.x = -5;
       actual.resolveEdges(100, 100);
-      expect(actual.velocity.x).toBe(5);
+      let xVelocityIsPositive;
+
+      if (actual.velocity.x > 0) {
+        xVelocityIsPositive = true;
+      }
+
+      expect(xVelocityIsPositive).toBe(true);
     });
     it("if x property is greater than width argument-radius property then x property will be set to width argument-radius property", () => {
       const actual = new Particle(5, 100, 5);
@@ -181,7 +187,13 @@ describe("Particle", () => {
       const actual = new Particle(5, 100, 5);
       actual.velocity.x = 5;
       actual.resolveEdges(100, 100);
-      expect(actual.velocity.x).toBe(-5);
+      let xVelocityIsNegative;
+
+      if (actual.velocity.x < 0) {
+        xVelocityIsNegative = true;
+      }
+
+      expect(xVelocityIsNegative).toBe(true);
     });
     it("if y property is less than 0+radius property then x property will be set to 0+radius", () => {
       const actual = new Particle(5, 5, -5);
@@ -192,7 +204,13 @@ describe("Particle", () => {
       const actual = new Particle(5, 5, -5);
       actual.velocity.y = -5;
       actual.resolveEdges(100, 100);
-      expect(actual.velocity.y).toBe(5);
+      let yVelocityIsPositive;
+
+      if (actual.velocity.y > 0) {
+        yVelocityIsPositive = true;
+      }
+
+      expect(yVelocityIsPositive).toBe(true);
     });
     it("if y property is greater than height argument-radius property then x property will be set to height argument-radius property", () => {
       const actual = new Particle(5, 5, 100);
@@ -203,58 +221,95 @@ describe("Particle", () => {
       const actual = new Particle(5, 5, 100);
       actual.velocity.y = 5;
       actual.resolveEdges(100, 100);
-      expect(actual.velocity.y).toBe(-5);
+      let yVelocityIsNegative;
+
+      if (actual.velocity.y < 0) {
+        yVelocityIsNegative = true;
+      }
+
+      expect(yVelocityIsNegative).toBe(true);
     });
     it("if x property is less than 0 + raidus property will call applyFriction method", () => {
       const actual = new Particle(5, 0, 5);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalled();
+
+      expect(applyFriction).toHaveBeenCalled();
     });
     it("if x property is greater than width argument - radius property will call applyFriction method", () => {
       const actual = new Particle(5, 100, 5);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalled();
+
+      expect(applyFriction).toHaveBeenCalled();
     });
     it("if y property is less than 0 + radius property will call applyFriction method", () => {
       const actual = new Particle(5, 5, 0);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalled();
+
+      expect(applyFriction).toHaveBeenCalled();
     });
     it("if y property is greater than height argument-radius property will call applyFriction method", () => {
       const actual = new Particle(5, 5, 100);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalled();
+
+      expect(applyFriction).toHaveBeenCalled();
     });
     it("will only call applyFriction method once even if both y and x property are both above height and width respectively", () => {
       const actual = new Particle(5, 100, 100);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalledTimes(1);
+
+      expect(applyFriction).toHaveBeenCalledTimes(1);
     });
     it("will only call applyFriction method once even if both y and x property are both above height and width arg - radius prop respectively", () => {
       const actual = new Particle(5, 100, 100);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalledTimes(1);
+
+      expect(applyFriction).toHaveBeenCalledTimes(1);
     });
     it("will only call applyFriction method once even if both y and x property are both below 0 + radius prop respectively", () => {
       const actual = new Particle(5, 0, 0);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalledTimes(1);
+
+      expect(applyFriction).toHaveBeenCalledTimes(1);
     });
     it("will only call applyFriction method once if x prop is below 0 + radius prop and y prop is above height arg - radius prop", () => {
       const actual = new Particle(5, 0, 100);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalledTimes(1);
+
+      expect(applyFriction).toHaveBeenCalledTimes(1);
     });
     it("will only call applyFriction method once if y prop is below 0 + radius prop and x prop is above width arg - radius prop", () => {
       const actual = new Particle(5, 100, 0);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
-      expect(actual.applyFriction).toHaveBeenCalledTimes(1);
+
+      expect(applyFriction).toHaveBeenCalledTimes(1);
     });
     it("will not call friction method if none of the above conditions are met", () => {
       const actual = new Particle(5, 50, 50);
+      const applyFriction = (Particle.prototype.applyFriction = jest.fn());
+
       actual.resolveEdges(100, 100);
+
       expect(actual.x).toBe(50);
       expect(actual.y).toBe(50);
+      expect(applyFriction).toHaveBeenCalledTimes(0);
     });
   });
 });
